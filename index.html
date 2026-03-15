@@ -6,8 +6,8 @@
     <title>PSE Stock Performance Chart</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- TradingView Script -->
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <!-- Chart.js for rendering the chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
 
@@ -15,7 +15,7 @@
         <!-- Header -->
         <header class="mb-6">
             <h1 class="text-3xl font-bold text-blue-900">📈 PSE Stock Analysis</h1>
-            <p class="text-gray-500 mt-1">Select a mid-to-large cap stock to study its chart and apply technical indicators.</p>
+            <p class="text-gray-500 mt-1">Custom charting tool using Yahoo Finance data (No popups, no restrictions).</p>
         </header>
 
         <!-- Controls Section -->
@@ -23,142 +23,290 @@
             
             <!-- Stock Selector -->
             <div class="w-full md:w-1/2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Select a PSE Stock (Categorized)</label>
-                <select id="stockSelect" onchange="changeStock()" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white font-medium text-gray-800">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Select a PSE Stock</label>
+                <!-- Notice the values are formatted for Yahoo Finance (e.g., BDO.PS) -->
+                <select id="stockSelect" onchange="updateChart()" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white font-medium text-gray-800">
                     
                     <optgroup label="🏦 Banking & Finance">
-                        <option value="PSE:BDO" selected>BDO Unibank, Inc. (BDO)</option>
-                        <option value="PSE:BPI">Bank of the Philippine Islands (BPI)</option>
-                        <option value="PSE:MBT">Metropolitan Bank & Trust (MBT)</option>
-                        <option value="PSE:SECB">Security Bank Corp. (SECB)</option>
-                        <option value="PSE:EW">East West Banking Corp. (EW)</option>
-                        <option value="PSE:UBP">Union Bank of the Phils. (UBP)</option>
-                        <option value="PSE:PNB">Philippine National Bank (PNB)</option>
+                        <option value="BDO.PS" selected>BDO Unibank, Inc. (BDO)</option>
+                        <option value="BPI.PS">Bank of the Philippine Islands (BPI)</option>
+                        <option value="MBT.PS">Metropolitan Bank & Trust (MBT)</option>
+                        <option value="SECB.PS">Security Bank Corp. (SECB)</option>
+                        <option value="EW.PS">East West Banking Corp. (EW)</option>
+                        <option value="UBP.PS">Union Bank of the Phils. (UBP)</option>
+                        <option value="PNB.PS">Philippine National Bank (PNB)</option>
                     </optgroup>
 
                     <optgroup label="🏢 Holding Firms / Conglomerates">
-                        <option value="PSE:SM">SM Investments Corp. (SM)</option>
-                        <option value="PSE:AC">Ayala Corporation (AC)</option>
-                        <option value="PSE:JGS">JG Summit Holdings, Inc. (JGS)</option>
-                        <option value="PSE:AEV">Aboitiz Equity Ventures (AEV)</option>
-                        <option value="PSE:LTG">LT Group, Inc. (LTG)</option>
-                        <option value="PSE:GTCAP">GT Capital Holdings (GTCAP)</option>
-                        <option value="PSE:DMC">DMCI Holdings, Inc. (DMC)</option>
-                        <option value="PSE:AGI">Alliance Global Group (AGI)</option>
-                        <option value="PSE:COSCO">Cosco Capital, Inc. (COSCO)</option>
+                        <option value="SM.PS">SM Investments Corp. (SM)</option>
+                        <option value="AC.PS">Ayala Corporation (AC)</option>
+                        <option value="JGS.PS">JG Summit Holdings, Inc. (JGS)</option>
+                        <option value="AEV.PS">Aboitiz Equity Ventures (AEV)</option>
+                        <option value="LTG.PS">LT Group, Inc. (LTG)</option>
+                        <option value="GTCAP.PS">GT Capital Holdings (GTCAP)</option>
+                        <option value="DMC.PS">DMCI Holdings, Inc. (DMC)</option>
+                        <option value="AGI.PS">Alliance Global Group (AGI)</option>
+                        <option value="COSCO.PS">Cosco Capital, Inc. (COSCO)</option>
                     </optgroup>
 
                     <optgroup label="🏙️ Property & Real Estate">
-                        <option value="PSE:ALI">Ayala Land, Inc. (ALI)</option>
-                        <option value="PSE:SMPH">SM Prime Holdings, Inc. (SMPH)</option>
-                        <option value="PSE:MEG">Megaworld Corp. (MEG)</option>
-                        <option value="PSE:RLC">Robinsons Land Corp. (RLC)</option>
-                        <option value="PSE:VLL">Vista Land & Lifescapes (VLL)</option>
-                        <option value="PSE:FLI">Filinvest Land, Inc. (FLI)</option>
+                        <option value="ALI.PS">Ayala Land, Inc. (ALI)</option>
+                        <option value="SMPH.PS">SM Prime Holdings, Inc. (SMPH)</option>
+                        <option value="MEG.PS">Megaworld Corp. (MEG)</option>
+                        <option value="RLC.PS">Robinsons Land Corp. (RLC)</option>
+                        <option value="VLL.PS">Vista Land & Lifescapes (VLL)</option>
+                        <option value="FLI.PS">Filinvest Land, Inc. (FLI)</option>
                     </optgroup>
 
                     <optgroup label="🛒 Food, Beverage & Retail">
-                        <option value="PSE:JFC">Jollibee Foods Corp. (JFC)</option>
-                        <option value="PSE:URC">Universal Robina Corp. (URC)</option>
-                        <option value="PSE:MONDE">Monde Nissin Corp. (MONDE)</option>
-                        <option value="PSE:CNPF">Century Pacific Food (CNPF)</option>
-                        <option value="PSE:PGOLD">Puregold Price Club (PGOLD)</option>
-                        <option value="PSE:RRHI">Robinsons Retail Holdings (RRHI)</option>
-                        <option value="PSE:DNL">D&L Industries, Inc. (DNL)</option>
-                        <option value="PSE:EMP">Emperador Inc. (EMP)</option>
-                        <option value="PSE:WLCON">Wilcon Depot, Inc. (WLCON)</option>
+                        <option value="JFC.PS">Jollibee Foods Corp. (JFC)</option>
+                        <option value="URC.PS">Universal Robina Corp. (URC)</option>
+                        <option value="MONDE.PS">Monde Nissin Corp. (MONDE)</option>
+                        <option value="CNPF.PS">Century Pacific Food (CNPF)</option>
+                        <option value="PGOLD.PS">Puregold Price Club (PGOLD)</option>
+                        <option value="RRHI.PS">Robinsons Retail Holdings (RRHI)</option>
+                        <option value="DNL.PS">D&L Industries, Inc. (DNL)</option>
+                        <option value="EMP.PS">Emperador Inc. (EMP)</option>
+                        <option value="WLCON.PS">Wilcon Depot, Inc. (WLCON)</option>
                     </optgroup>
 
                     <optgroup label="⚡ Power, Energy & Utilities">
-                        <option value="PSE:MER">Manila Electric Co. (MER)</option>
-                        <option value="PSE:AP">Aboitiz Power Corp. (AP)</option>
-                        <option value="PSE:ACEN">ACEN Corporation (ACEN)</option>
-                        <option value="PSE:SCC">Semirara Mining & Power (SCC)</option>
-                        <option value="PSE:PCOR">Petron Corporation (PCOR)</option>
-                        <option value="PSE:MWIDE">Megawide Construction (MWIDE)</option>
-                        <option value="PSE:SHLPH">Pilipinas Shell (SHLPH)</option>
+                        <option value="MER.PS">Manila Electric Co. (MER)</option>
+                        <option value="AP.PS">Aboitiz Power Corp. (AP)</option>
+                        <option value="ACEN.PS">ACEN Corporation (ACEN)</option>
+                        <option value="SCC.PS">Semirara Mining & Power (SCC)</option>
+                        <option value="PCOR.PS">Petron Corporation (PCOR)</option>
+                        <option value="MWIDE.PS">Megawide Construction (MWIDE)</option>
+                        <option value="SHLPH.PS">Pilipinas Shell (SHLPH)</option>
                     </optgroup>
 
                     <optgroup label="📱 Telecom, Media & Tech">
-                        <option value="PSE:TEL">PLDT Inc. (TEL)</option>
-                        <option value="PSE:GLO">Globe Telecom, Inc. (GLO)</option>
-                        <option value="PSE:CNVRG">Converge ICT Solutions (CNVRG)</option>
-                        <option value="PSE:DITO">DITO CME Holdings (DITO)</option>
-                        <option value="PSE:GMA7">GMA Network, Inc. (GMA7)</option>
+                        <option value="TEL.PS">PLDT Inc. (TEL)</option>
+                        <option value="GLO.PS">Globe Telecom, Inc. (GLO)</option>
+                        <option value="CNVRG.PS">Converge ICT Solutions (CNVRG)</option>
+                        <option value="DITO.PS">DITO CME Holdings (DITO)</option>
+                        <option value="GMA7.PS">GMA Network, Inc. (GMA7)</option>
                     </optgroup>
 
                     <optgroup label="✈️ Transport, Services & Others">
-                        <option value="PSE:ICT">Int'l Container Terminal (ICT)</option>
-                        <option value="PSE:CEB">Cebu Air, Inc. (CEB)</option>
-                        <option value="PSE:MAC">MacroAsia Corp. (MAC)</option>
-                        <option value="PSE:BLOOM">Bloomberry Resorts (BLOOM)</option>
-                        <option value="PSE:NIKL">Nickel Asia Corp. (NIKL)</option>
+                        <option value="ICT.PS">Int'l Container Terminal (ICT)</option>
+                        <option value="CEB.PS">Cebu Air, Inc. (CEB)</option>
+                        <option value="MAC.PS">MacroAsia Corp. (MAC)</option>
+                        <option value="BLOOM.PS">Bloomberry Resorts (BLOOM)</option>
+                        <option value="NIKL.PS">Nickel Asia Corp. (NIKL)</option>
                     </optgroup>
 
                     <optgroup label="🏘️ REITs (Dividend Yielders)">
-                        <option value="PSE:AREIT">AREIT, Inc. (AREIT)</option>
-                        <option value="PSE:MREIT">MREIT, Inc. (MREIT)</option>
-                        <option value="PSE:CREIT">Citicore Energy REIT (CREIT)</option>
-                        <option value="PSE:RCR">RL Commercial REIT (RCR)</option>
-                        <option value="PSE:FILRT">Filinvest REIT Corp. (FILRT)</option>
-                        <option value="PSE:PREIT">Premiere Island Power REIT (PREIT)</option>
+                        <option value="AREIT.PS">AREIT, Inc. (AREIT)</option>
+                        <option value="MREIT.PS">MREIT, Inc. (MREIT)</option>
+                        <option value="CREIT.PS">Citicore Energy REIT (CREIT)</option>
+                        <option value="RCR.PS">RL Commercial REIT (RCR)</option>
+                        <option value="FILRT.PS">Filinvest REIT Corp. (FILRT)</option>
+                        <option value="PREIT.PS">Premiere Island Power REIT (PREIT)</option>
                     </optgroup>
 
                 </select>
             </div>
 
-            <div class="w-full md:w-auto text-sm text-gray-500 italic bg-gray-50 p-3 rounded border border-gray-100">
-                <span class="font-semibold text-blue-600">Pro tip:</span> Click "fx" on the top toolbar to add Indicators (RSI, MACD, Moving Averages).
+            <!-- Time Range Buttons -->
+            <div class="w-full md:w-auto">
+                <label class="block text-sm font-medium text-gray-700 mb-1 md:text-right">Time Range</label>
+                <div class="inline-flex rounded-md shadow-sm" role="group" id="rangeButtons">
+                    <button type="button" onclick="setRange('1mo', this)" class="range-btn bg-white text-gray-700 px-4 py-2 text-sm font-medium border border-gray-300 rounded-l-lg hover:bg-gray-100 transition">1M</button>
+                    <button type="button" onclick="setRange('3mo', this)" class="range-btn active bg-blue-600 text-white px-4 py-2 text-sm font-medium border border-blue-600 hover:bg-blue-700 transition">3M</button>
+                    <button type="button" onclick="setRange('6mo', this)" class="range-btn bg-white text-gray-700 px-4 py-2 text-sm font-medium border border-gray-300 hover:bg-gray-100 transition">6M</button>
+                    <button type="button" onclick="setRange('1y', this)" class="range-btn bg-white text-gray-700 px-4 py-2 text-sm font-medium border border-gray-300 hover:bg-gray-100 transition">1Y</button>
+                    <button type="button" onclick="setRange('5y', this)" class="range-btn bg-white text-gray-700 px-4 py-2 text-sm font-medium border border-gray-300 rounded-r-lg hover:bg-gray-100 transition">5Y</button>
+                </div>
             </div>
         </div>
 
         <!-- Chart Container -->
-        <div class="bg-white p-1 rounded-b-lg shadow-sm border border-gray-200">
-            <!-- This div is where TradingView will inject the chart -->
-            <div id="tv_chart_container" class="w-full h-[650px]"></div>
+        <div class="bg-white p-6 rounded-b-lg shadow-sm border border-gray-200 relative">
+            
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="absolute inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center z-10 hidden rounded-b-lg">
+                <svg class="animate-spin h-8 w-8 text-blue-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <span id="loadingText" class="text-gray-600 font-medium">Fetching Market Data...</span>
+            </div>
+
+            <!-- Chart Canvas -->
+            <div class="h-[500px] w-full">
+                <canvas id="stockChart"></canvas>
+            </div>
+            
+            <p id="errorMessage" class="text-red-500 text-center mt-4 hidden font-medium">Failed to load data. Please check your internet connection and try again.</p>
         </div>
     </div>
 
     <script>
-        // Global variable to keep track of the widget
-        let tvWidget = null;
+        let currentChart = null;
+        let currentRange = '3mo'; // Default range
 
-        // Function to create/update the TradingView widget
-        function loadChart(symbolToLoad) {
-            // Destroy the old widget if it exists so we don't stack iframes
-            if (tvWidget) {
-                document.getElementById('tv_chart_container').innerHTML = '';
+        // Handle Time Range Button Clicks
+        function setRange(range, btnElement) {
+            currentRange = range;
+            
+            // Update button styles
+            document.querySelectorAll('.range-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+                btn.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+            });
+            btnElement.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+            btnElement.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+
+            updateChart();
+        }
+
+        // Multi-Proxy Fetch Function (Bulletproof data retrieval)
+        async function fetchChartData(ticker, range) {
+            let interval = '1d'; // Daily candles
+            if (range === '5y') interval = '1wk'; // Switch to weekly for 5 years to prevent lag
+
+            const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=${range}&interval=${interval}`;
+            
+            // If one proxy fails, the code automatically tries the next one!
+            const proxies = [
+                `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`,
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yahooUrl)}`
+            ];
+
+            let data = null;
+
+            for (let i = 0; i < proxies.length; i++) {
+                try {
+                    document.getElementById('loadingText').innerText = `Fetching data (Attempt ${i+1}/${proxies.length})...`;
+                    const response = await fetch(proxies[i]);
+                    if (!response.ok) throw new Error("Proxy failed");
+                    
+                    const json = await response.json();
+                    
+                    // Verify data exists
+                    if (!json.chart || !json.chart.result) throw new Error("Invalid data format");
+                    
+                    data = json;
+                    break; // Success! Break out of the proxy loop.
+                } catch (error) {
+                    console.warn(`Proxy ${i+1} failed. Trying next...`);
+                }
             }
 
-            tvWidget = new TradingView.widget({
-                "autosize": true,
-                "symbol": symbolToLoad,
-                "interval": "D", // Daily timeframe
-                "timezone": "Asia/Manila",
-                "theme": "light",
-                "style": "1", // "1" = Japanese Candlesticks (Best for studying price action)
-                "locale": "en",
-                "enable_publishing": false,
-                "backgroundColor": "#ffffff",
-                "gridColor": "#f1f5f9",
-                "hide_top_toolbar": false,
-                "hide_legend": false,
-                "save_image": false,
-                "allow_symbol_change": false, // Removes the symbol search box in the widget to reduce popups
-                "show_popup_button": false, // Tells TV not to show the external popup button
-                "container_id": "tv_chart_container"
+            // Parse the data if successful
+            if (data) {
+                const result = data.chart.result[0];
+                const timestamps = result.timestamp;
+                const closePrices = result.indicators.quote[0].close;
+
+                const chartData = [];
+                for (let i = 0; i < timestamps.length; i++) {
+                    if (closePrices[i] !== null && closePrices[i] !== undefined) {
+                        chartData.push({
+                            date: new Date(timestamps[i] * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                            price: closePrices[i]
+                        });
+                    }
+                }
+                return chartData;
+            } else {
+                return null; // All proxies failed
+            }
+        }
+
+        // Draw or Update the Chart.js instance
+        async function updateChart() {
+            const ticker = document.getElementById("stockSelect").value;
+            const stockSelectDropdown = document.getElementById("stockSelect");
+            const stockName = stockSelectDropdown.options[stockSelectDropdown.selectedIndex].text;
+            
+            const loadingOverlay = document.getElementById("loadingOverlay");
+            const errorMessage = document.getElementById("errorMessage");
+
+            // Show loading, hide error
+            loadingOverlay.classList.remove("hidden");
+            errorMessage.classList.add("hidden");
+
+            // Fetch the data
+            const data = await fetchChartData(ticker, currentRange);
+
+            loadingOverlay.classList.add("hidden");
+
+            if (!data || data.length === 0) {
+                errorMessage.classList.remove("hidden");
+                return;
+            }
+
+            // Prepare axes
+            const labels = data.map(item => item.date);
+            const prices = data.map(item => item.price);
+
+            // Destroy old chart if it exists
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            
+            // Color Logic: Green if stock is Up, Red if stock is Down
+            const startPrice = prices[0];
+            const endPrice = prices[prices.length - 1];
+            const isUp = endPrice >= startPrice;
+            const lineColor = isUp ? '#16a34a' : '#dc2626'; // Green or Red
+            const fillColor = isUp ? 'rgba(22, 163, 74, 0.1)' : 'rgba(220, 38, 38, 0.1)';
+
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `${stockName} - Closing Price (PHP)`,
+                        data: prices,
+                        borderColor: lineColor,
+                        backgroundColor: fillColor,
+                        borderWidth: 2.5,
+                        pointRadius: 0, // Hide dots to make line look clean
+                        pointHoverRadius: 6, // Show dots when hovering
+                        pointHoverBackgroundColor: lineColor,
+                        fill: true,
+                        tension: 0.1 // Slight curve
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ₱' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { maxTicksLimit: 10 }
+                        },
+                        y: {
+                            grid: { color: '#f1f5f9' },
+                            ticks: {
+                                callback: function(value) { return '₱' + value; }
+                            }
+                        }
+                    }
+                }
             });
         }
 
-        // Triggered when dropdown is changed
-        function changeStock() {
-            const selectedSymbol = document.getElementById("stockSelect").value;
-            loadChart(selectedSymbol);
-        }
-
-        // Load default stock (BDO) when page first opens
+        // Initialize the chart when the page loads
         window.onload = () => {
-            loadChart("PSE:BDO");
+            updateChart();
         };
     </script>
 </body>
