@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PSE Stock Chart (Proxy-Safe Version)</title>
+    <title>Offline PSE Stock Chart</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js for rendering the chart -->
@@ -11,200 +11,144 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
 
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
         <!-- Header -->
-        <header class="mb-6">
-            <h1 class="text-3xl font-bold text-blue-900">📈 PSE Stock Analysis</h1>
-            <p class="text-gray-500 mt-1">Custom charting tool using Yahoo Finance. Engineered to bypass CORS blocks.</p>
+        <header class="mb-6 border-b pb-4">
+            <h1 class="text-3xl font-bold text-blue-900">📈 Offline PSE Stock Analysis</h1>
+            <p class="text-gray-500 mt-1">100% Offline. Load your extracted local CSV/TXT data files.</p>
         </header>
 
         <!-- Controls Section -->
-        <div class="bg-white p-6 rounded-t-lg shadow-sm border border-gray-200 border-b-0 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
             
-            <!-- Stock Selector -->
-            <div class="w-full md:w-1/2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Select a PSE Stock</label>
-                <select id="stockSelect" onchange="updateChart()" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white font-medium text-gray-800">
-                    
-                    <optgroup label="🏦 Banking & Finance">
-                        <option value="BDO.PS" selected>BDO Unibank, Inc. (BDO)</option>
-                        <option value="BPI.PS">Bank of the Philippine Islands (BPI)</option>
-                        <option value="MBT.PS">Metropolitan Bank & Trust (MBT)</option>
-                        <option value="SECB.PS">Security Bank Corp. (SECB)</option>
-                    </optgroup>
-
-                    <optgroup label="🏢 Holding Firms / Conglomerates">
-                        <option value="SM.PS">SM Investments Corp. (SM)</option>
-                        <option value="AC.PS">Ayala Corporation (AC)</option>
-                        <option value="JGS.PS">JG Summit Holdings, Inc. (JGS)</option>
-                        <option value="AEV.PS">Aboitiz Equity Ventures (AEV)</option>
-                    </optgroup>
-
-                    <optgroup label="🏙️ Property & Real Estate">
-                        <option value="ALI.PS">Ayala Land, Inc. (ALI)</option>
-                        <option value="SMPH.PS">SM Prime Holdings, Inc. (SMPH)</option>
-                        <option value="MEG.PS">Megaworld Corp. (MEG)</option>
-                        <option value="RLC.PS">Robinsons Land Corp. (RLC)</option>
-                    </optgroup>
-
-                    <optgroup label="🛒 Food, Beverage & Retail">
-                        <option value="JFC.PS">Jollibee Foods Corp. (JFC)</option>
-                        <option value="URC.PS">Universal Robina Corp. (URC)</option>
-                        <option value="MONDE.PS">Monde Nissin Corp. (MONDE)</option>
-                        <option value="CNPF.PS">Century Pacific Food (CNPF)</option>
-                    </optgroup>
-
-                    <optgroup label="⚡ Power, Energy & Telecom">
-                        <option value="MER.PS">Manila Electric Co. (MER)</option>
-                        <option value="TEL.PS">PLDT Inc. (TEL)</option>
-                        <option value="GLO.PS">Globe Telecom, Inc. (GLO)</option>
-                        <option value="AP.PS">Aboitiz Power Corp. (AP)</option>
-                    </optgroup>
-                    
-                    <optgroup label="🏘️ REITs (Dividend Yielders)">
-                        <option value="AREIT.PS">AREIT, Inc. (AREIT)</option>
-                        <option value="MREIT.PS">MREIT, Inc. (MREIT)</option>
-                        <option value="CREIT.PS">Citicore Energy REIT (CREIT)</option>
-                    </optgroup>
-
-                </select>
+            <div class="w-full">
+                <label class="block text-sm font-bold text-gray-700 mb-2">1. Extract your .lzh file first.</label>
+                <label class="block text-sm font-bold text-gray-700 mb-2">2. Upload the extracted .csv or .txt file here:</label>
+                
+                <!-- File Input for Local Data -->
+                <input type="file" id="csvFileInput" accept=".csv, .txt" 
+                    class="block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-50 file:text-blue-700
+                    hover:file:bg-blue-100 cursor-pointer border border-gray-300 rounded-md p-2">
             </div>
 
-            <!-- Time Range Buttons -->
-            <div class="w-full md:w-auto">
-                <label class="block text-sm font-medium text-gray-700 mb-1 md:text-right">Time Range</label>
-                <div class="inline-flex rounded-md shadow-sm" role="group" id="rangeButtons">
-                    <button type="button" onclick="setRange('1mo', this)" class="range-btn bg-white text-gray-700 px-4 py-2 text-sm font-medium border border-gray-300 rounded-l-lg hover:bg-gray-100 transition">1M</button>
-                    <button type="button" onclick="setRange('3mo', this)" class="range-btn active bg-blue-600 text-white px-4 py-2 text-sm font-medium border border-blue-600 hover:bg-blue-700 transition">3M</button>
-                    <button type="button" onclick="setRange('6mo', this)" class="range-btn bg-white text-gray-700 px-4 py-2 text-sm font-medium border border-gray-300 hover:bg-gray-100 transition">6M</button>
-                    <button type="button" onclick="setRange('1y', this)" class="range-btn bg-white text-gray-700 px-4 py-2 text-sm font-medium border border-gray-300 hover:bg-gray-100 transition">1Y</button>
-                    <button type="button" onclick="setRange('5y', this)" class="range-btn bg-white text-gray-700 px-4 py-2 text-sm font-medium border border-gray-300 rounded-r-lg hover:bg-gray-100 transition">5Y</button>
-                </div>
-            </div>
         </div>
 
         <!-- Chart Container -->
-        <div class="bg-white p-6 rounded-b-lg shadow-sm border border-gray-200 relative">
-            
-            <!-- Loading Overlay -->
-            <div id="loadingOverlay" class="absolute inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center z-10 hidden rounded-b-lg">
-                <svg class="animate-spin h-8 w-8 text-blue-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <span id="loadingText" class="text-gray-600 font-medium">Fetching Market Data...</span>
-            </div>
-
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 relative">
             <!-- Chart Canvas -->
             <div class="h-[500px] w-full">
                 <canvas id="stockChart"></canvas>
             </div>
             
-            <!-- Error Readout -->
-            <div id="errorContainer" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded text-sm text-red-600 font-mono">
-                <p id="errorMessage" class="font-bold mb-1">Failed to load data.</p>
-                <p id="errorDetails"></p>
-            </div>
+            <p id="errorMessage" class="text-red-500 mt-4 hidden font-medium bg-red-50 p-3 rounded"></p>
         </div>
     </div>
 
     <script>
         let currentChart = null;
-        let currentRange = '3mo'; // Default range
 
-        function setRange(range, btnElement) {
-            currentRange = range;
-            document.querySelectorAll('.range-btn').forEach(btn => {
-                btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
-                btn.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
-            });
-            btnElement.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
-            btnElement.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
-            updateChart();
-        }
+        // Listen for when a file is selected
+        document.getElementById('csvFileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-        // The new, ultra-resilient fetch function
-        async function fetchChartData(ticker, range) {
-            const interval = range === '5y' ? '1wk' : '1d'; 
+            const reader = new FileReader();
+
+            // When the file is done reading
+            reader.onload = function(e) {
+                const text = e.target.result;
+                processData(text, file.name);
+            };
+
+            // Read the file as text
+            reader.readAsText(file);
+        });
+
+        // Parse the CSV/TXT data
+        function processData(csvText, fileName) {
+            const errorMessage = document.getElementById("errorMessage");
+            errorMessage.classList.add("hidden");
+
+            // Split file into lines
+            const lines = csvText.split('\n').filter(line => line.trim() !== '');
             
-            // Using the lighter 'spark' endpoint which is rarely blocked
-            const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${ticker}&range=${range}&interval=${interval}`;
-            
-            // Using the /get method of allorigins. It returns a JSON object containing the data string.
-            // This bypasses CORS strict checks when opening local file:/// HTML documents.
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}&t=${Date.now()}`;
-
-            try {
-                const response = await fetch(proxyUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`Proxy returned HTTP ${response.status}`);
-                }
-                
-                const proxyData = await response.json();
-                
-                if (!proxyData.contents) {
-                    throw new Error("Proxy returned empty contents. Yahoo might be temporarily blocking the proxy IP.");
-                }
-
-                // Parse the inner stringified JSON from Yahoo
-                const yahooData = JSON.parse(proxyData.contents);
-                
-                // Navigate Yahoo's nested data structure
-                const result = yahooData.spark.result[0].response[0];
-                const timestamps = result.timestamp;
-                const closePrices = result.indicators.quote[0].close;
-
-                const chartData = [];
-                for (let i = 0; i < timestamps.length; i++) {
-                    if (closePrices[i] !== null && closePrices[i] !== undefined) {
-                        chartData.push({
-                            date: new Date(timestamps[i] * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                            price: closePrices[i]
-                        });
-                    }
-                }
-                return { success: true, data: chartData };
-
-            } catch (error) {
-                console.error("Fetch error:", error);
-                return { success: false, error: error.message };
-            }
-        }
-
-        async function updateChart() {
-            const stockSelectDropdown = document.getElementById("stockSelect");
-            const ticker = stockSelectDropdown.value;
-            const stockName = stockSelectDropdown.options[stockSelectDropdown.selectedIndex].text;
-            
-            const loadingOverlay = document.getElementById("loadingOverlay");
-            const errorContainer = document.getElementById("errorContainer");
-            const errorDetails = document.getElementById("errorDetails");
-
-            // UI Resets
-            loadingOverlay.classList.remove("hidden");
-            errorContainer.classList.add("hidden");
-
-            // Fetch Data
-            const response = await fetchChartData(ticker, currentRange);
-            loadingOverlay.classList.add("hidden");
-
-            if (!response.success || response.data.length === 0) {
-                errorContainer.classList.remove("hidden");
-                errorDetails.innerText = `Log: ${response.error || "No data available for this timeframe."}`;
+            if (lines.length < 2) {
+                showError("The file seems empty or invalid.");
                 return;
             }
 
-            const data = response.data;
-            const labels = data.map(item => item.date);
-            const prices = data.map(item => item.price);
+            const dates = [];
+            const prices = [];
 
+            // Simple parser: Most PSE CSVs look like "TICKER, DATE, OPEN, HIGH, LOW, CLOSE, VOL"
+            // Or just "Date, Open, High, Low, Close"
+            
+            // Loop through lines (skipping the first row if it contains headers like 'Date')
+            let startRow = isNaN(parseFloat(lines[0].split(',')[1])) ? 1 : 0;
+
+            for (let i = startRow; i < lines.length; i++) {
+                const columns = lines[i].split(',');
+
+                // We need to guess which column is the Date and which is the Close Price.
+                // Usually, Date is column 0 or 1, and Close is the second to last, or index 4/5.
+                
+                let dateCol, closeCol;
+
+                // Typical format: TICKER, YYYYMMDD, OPEN, HIGH, LOW, CLOSE, VOLUME
+                if (columns.length >= 6 && isNaN(columns[0])) { 
+                    dateCol = columns[1];
+                    closeCol = columns[5]; 
+                } 
+                // Typical format: Date, Open, High, Low, Close, Adj Close, Volume
+                else if (columns.length >= 5) {
+                    dateCol = columns[0];
+                    closeCol = columns[4];
+                } else {
+                    continue; // Skip lines we can't understand
+                }
+
+                // Clean up the data
+                const price = parseFloat(closeCol);
+                
+                // Format the date if it's YYYYMMDD
+                let dateStr = dateCol.trim();
+                if (dateStr.length === 8 && !dateStr.includes('-') && !dateStr.includes('/')) {
+                    dateStr = `${dateStr.substring(0,4)}-${dateStr.substring(4,6)}-${dateStr.substring(6,8)}`;
+                }
+
+                if (!isNaN(price)) {
+                    dates.push(dateStr);
+                    prices.push(price);
+                }
+            }
+
+            if (prices.length === 0) {
+                showError("Could not find valid price data in this file. Please ensure it's a standard Stock CSV.");
+                return;
+            }
+
+            // Reverse data if it goes from Newest -> Oldest (we want Oldest -> Newest left to right)
+            if (new Date(dates[0]) > new Date(dates[dates.length - 1])) {
+                dates.reverse();
+                prices.reverse();
+            }
+
+            drawChart(dates, prices, fileName.replace('.csv', '').replace('.txt', ''));
+        }
+
+        function drawChart(labels, prices, stockName) {
             if (currentChart) {
                 currentChart.destroy();
             }
 
             const ctx = document.getElementById('stockChart').getContext('2d');
             
-            // Dynamic Line Colors
             const isUp = prices[prices.length - 1] >= prices[0];
-            const lineColor = isUp ? '#16a34a' : '#dc2626'; // Tailwind green/red
+            const lineColor = isUp ? '#16a34a' : '#dc2626'; // Green if up, Red if down
             const fillColor = isUp ? 'rgba(22, 163, 74, 0.1)' : 'rgba(220, 38, 38, 0.1)';
 
             currentChart = new Chart(ctx, {
@@ -212,14 +156,13 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: `${stockName} - Closing Price (PHP)`,
+                        label: `${stockName} - Closing Price`,
                         data: prices,
                         borderColor: lineColor,
                         backgroundColor: fillColor,
-                        borderWidth: 2.5,
+                        borderWidth: 2,
                         pointRadius: 0,
                         pointHoverRadius: 6,
-                        pointHoverBackgroundColor: lineColor,
                         fill: true,
                         tension: 0.1
                     }]
@@ -230,24 +173,21 @@
                     interaction: { mode: 'index', intersect: false },
                     plugins: {
                         legend: { display: true, position: 'top' },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) { return ' ₱' + context.parsed.y.toFixed(2); }
-                            }
-                        }
+                        tooltip: { callbacks: { label: function(context) { return ' ₱' + context.parsed.y.toFixed(2); } } }
                     },
                     scales: {
-                        x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } },
-                        y: {
-                            grid: { color: '#f1f5f9' },
-                            ticks: { callback: function(value) { return '₱' + value; } }
-                        }
+                        x: { grid: { display: false }, ticks: { maxTicksLimit: 12 } },
+                        y: { grid: { color: '#f1f5f9' }, ticks: { callback: function(value) { return '₱' + value; } } }
                     }
                 }
             });
         }
 
-        window.onload = () => { updateChart(); };
+        function showError(msg) {
+            const err = document.getElementById("errorMessage");
+            err.innerText = msg;
+            err.classList.remove("hidden");
+        }
     </script>
 </body>
 </html>
