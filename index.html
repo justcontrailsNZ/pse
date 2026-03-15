@@ -14,55 +14,129 @@
     <div class="container mx-auto px-4 py-8 max-w-6xl">
         <!-- Header -->
         <header class="mb-6">
-            <h1 class="text-3xl font-bold text-blue-900">📈 PSE Stock Performance</h1>
-            <p class="text-gray-500 mt-1">Institutional-grade charting powered by TradingView. 100% reliable.</p>
+            <h1 class="text-3xl font-bold text-blue-900">📈 PSE Stock Analysis</h1>
+            <p class="text-gray-500 mt-1">Select a mid-to-large cap stock to study its chart and apply technical indicators.</p>
         </header>
 
         <!-- Controls Section -->
         <div class="bg-white p-6 rounded-t-lg shadow-sm border border-gray-200 border-b-0 flex flex-col md:flex-row justify-between items-center gap-4">
             
             <!-- Stock Selector -->
-            <div class="w-full md:w-1/3">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Select a PSE Stock</label>
-                <!-- Notice the values are now formatted as "PSE:TICKER" -->
-                <select id="stockSelect" onchange="changeStock()" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white font-medium">
-                    <option value="PSE:ALI">Ayala Land, Inc. (ALI)</option>
-                    <option value="PSE:SM">SM Investments (SM)</option>
-                    <option value="PSE:BDO" selected>BDO Unibank (BDO)</option>
-                    <option value="PSE:JFC">Jollibee Foods (JFC)</option>
-                    <option value="PSE:AC">Ayala Corporation (AC)</option>
-                    <option value="PSE:BPI">Bank of the Phil. Islands (BPI)</option>
-                    <option value="PSE:TEL">PLDT Inc. (TEL)</option>
-                    <option value="PSE:GLO">Globe Telecom (GLO)</option>
-                    <option value="PSE:URC">Universal Robina (URC)</option>
-                    <option value="PSE:MER">Manila Electric (MER)</option>
-                    <option value="PSE:SMPH">SM Prime Holdings (SMPH)</option>
-                    <option value="PSE:ICT">ICTSI (ICT)</option>
+            <div class="w-full md:w-1/2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Select a PSE Stock (Categorized)</label>
+                <select id="stockSelect" onchange="changeStock()" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white font-medium text-gray-800">
+                    
+                    <optgroup label="🏦 Banking & Finance">
+                        <option value="PSE:BDO" selected>BDO Unibank, Inc. (BDO)</option>
+                        <option value="PSE:BPI">Bank of the Philippine Islands (BPI)</option>
+                        <option value="PSE:MBT">Metropolitan Bank & Trust (MBT)</option>
+                        <option value="PSE:SECB">Security Bank Corp. (SECB)</option>
+                        <option value="PSE:EW">East West Banking Corp. (EW)</option>
+                        <option value="PSE:UBP">Union Bank of the Phils. (UBP)</option>
+                        <option value="PSE:PNB">Philippine National Bank (PNB)</option>
+                    </optgroup>
+
+                    <optgroup label="🏢 Holding Firms / Conglomerates">
+                        <option value="PSE:SM">SM Investments Corp. (SM)</option>
+                        <option value="PSE:AC">Ayala Corporation (AC)</option>
+                        <option value="PSE:JGS">JG Summit Holdings, Inc. (JGS)</option>
+                        <option value="PSE:AEV">Aboitiz Equity Ventures (AEV)</option>
+                        <option value="PSE:LTG">LT Group, Inc. (LTG)</option>
+                        <option value="PSE:GTCAP">GT Capital Holdings (GTCAP)</option>
+                        <option value="PSE:DMC">DMCI Holdings, Inc. (DMC)</option>
+                        <option value="PSE:AGI">Alliance Global Group (AGI)</option>
+                        <option value="PSE:COSCO">Cosco Capital, Inc. (COSCO)</option>
+                    </optgroup>
+
+                    <optgroup label="🏙️ Property & Real Estate">
+                        <option value="PSE:ALI">Ayala Land, Inc. (ALI)</option>
+                        <option value="PSE:SMPH">SM Prime Holdings, Inc. (SMPH)</option>
+                        <option value="PSE:MEG">Megaworld Corp. (MEG)</option>
+                        <option value="PSE:RLC">Robinsons Land Corp. (RLC)</option>
+                        <option value="PSE:VLL">Vista Land & Lifescapes (VLL)</option>
+                        <option value="PSE:FLI">Filinvest Land, Inc. (FLI)</option>
+                    </optgroup>
+
+                    <optgroup label="🛒 Food, Beverage & Retail">
+                        <option value="PSE:JFC">Jollibee Foods Corp. (JFC)</option>
+                        <option value="PSE:URC">Universal Robina Corp. (URC)</option>
+                        <option value="PSE:MONDE">Monde Nissin Corp. (MONDE)</option>
+                        <option value="PSE:CNPF">Century Pacific Food (CNPF)</option>
+                        <option value="PSE:PGOLD">Puregold Price Club (PGOLD)</option>
+                        <option value="PSE:RRHI">Robinsons Retail Holdings (RRHI)</option>
+                        <option value="PSE:DNL">D&L Industries, Inc. (DNL)</option>
+                        <option value="PSE:EMP">Emperador Inc. (EMP)</option>
+                        <option value="PSE:WLCON">Wilcon Depot, Inc. (WLCON)</option>
+                    </optgroup>
+
+                    <optgroup label="⚡ Power, Energy & Utilities">
+                        <option value="PSE:MER">Manila Electric Co. (MER)</option>
+                        <option value="PSE:AP">Aboitiz Power Corp. (AP)</option>
+                        <option value="PSE:ACEN">ACEN Corporation (ACEN)</option>
+                        <option value="PSE:SCC">Semirara Mining & Power (SCC)</option>
+                        <option value="PSE:PCOR">Petron Corporation (PCOR)</option>
+                        <option value="PSE:MWIDE">Megawide Construction (MWIDE)</option>
+                        <option value="PSE:SHLPH">Pilipinas Shell (SHLPH)</option>
+                    </optgroup>
+
+                    <optgroup label="📱 Telecom, Media & Tech">
+                        <option value="PSE:TEL">PLDT Inc. (TEL)</option>
+                        <option value="PSE:GLO">Globe Telecom, Inc. (GLO)</option>
+                        <option value="PSE:CNVRG">Converge ICT Solutions (CNVRG)</option>
+                        <option value="PSE:DITO">DITO CME Holdings (DITO)</option>
+                        <option value="PSE:GMA7">GMA Network, Inc. (GMA7)</option>
+                    </optgroup>
+
+                    <optgroup label="✈️ Transport, Services & Others">
+                        <option value="PSE:ICT">Int'l Container Terminal (ICT)</option>
+                        <option value="PSE:CEB">Cebu Air, Inc. (CEB)</option>
+                        <option value="PSE:MAC">MacroAsia Corp. (MAC)</option>
+                        <option value="PSE:BLOOM">Bloomberry Resorts (BLOOM)</option>
+                        <option value="PSE:NIKL">Nickel Asia Corp. (NIKL)</option>
+                    </optgroup>
+
+                    <optgroup label="🏘️ REITs (Dividend Yielders)">
+                        <option value="PSE:AREIT">AREIT, Inc. (AREIT)</option>
+                        <option value="PSE:MREIT">MREIT, Inc. (MREIT)</option>
+                        <option value="PSE:CREIT">Citicore Energy REIT (CREIT)</option>
+                        <option value="PSE:RCR">RL Commercial REIT (RCR)</option>
+                        <option value="PSE:FILRT">Filinvest REIT Corp. (FILRT)</option>
+                        <option value="PSE:PREIT">Premiere Island Power REIT (PREIT)</option>
+                    </optgroup>
+
                 </select>
             </div>
 
-            <div class="w-full md:w-auto text-sm text-gray-500 italic">
-                Tip: Use the bottom toolbar on the chart to change time ranges (1M, 3M, 1Y, 5Y, All).
+            <div class="w-full md:w-auto text-sm text-gray-500 italic bg-gray-50 p-3 rounded border border-gray-100">
+                <span class="font-semibold text-blue-600">Pro tip:</span> Click "fx" on the top toolbar to add Indicators (RSI, MACD, Moving Averages).
             </div>
         </div>
 
         <!-- Chart Container -->
         <div class="bg-white p-1 rounded-b-lg shadow-sm border border-gray-200">
             <!-- This div is where TradingView will inject the chart -->
-            <div id="tv_chart_container" class="w-full h-[600px]"></div>
+            <div id="tv_chart_container" class="w-full h-[650px]"></div>
         </div>
     </div>
 
     <script>
+        // Global variable to keep track of the widget
+        let tvWidget = null;
+
         // Function to create/update the TradingView widget
         function loadChart(symbolToLoad) {
-            new TradingView.widget({
+            // Destroy the old widget if it exists so we don't stack iframes
+            if (tvWidget) {
+                document.getElementById('tv_chart_container').innerHTML = '';
+            }
+
+            tvWidget = new TradingView.widget({
                 "autosize": true,
                 "symbol": symbolToLoad,
-                "interval": "D", // Default interval is Daily
+                "interval": "D", // Daily timeframe
                 "timezone": "Asia/Manila",
                 "theme": "light",
-                "style": "3", // "3" is an Area/Mountain chart. Change to "1" if you prefer Candlesticks!
+                "style": "1", // "1" = Japanese Candlesticks (Best for studying price action)
                 "locale": "en",
                 "enable_publishing": false,
                 "backgroundColor": "#ffffff",
@@ -70,6 +144,8 @@
                 "hide_top_toolbar": false,
                 "hide_legend": false,
                 "save_image": false,
+                "allow_symbol_change": false, // Removes the symbol search box in the widget to reduce popups
+                "show_popup_button": false, // Tells TV not to show the external popup button
                 "container_id": "tv_chart_container"
             });
         }
